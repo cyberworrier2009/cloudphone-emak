@@ -15,6 +15,9 @@ lifecycle = "2.7.0"
 navigationCompose = "2.7.6"
 # SIP / VOIP
 linphone = "5.3.77"
+# Push (FCM)
+firebaseBom = "33.7.0"
+googleServices = "4.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +43,11 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 # SIP / VOIP
 linphone-sdk-android = { group = "org.linphone", name = "linphone-sdk-android", version.ref = "linphone" }
 
+# Firebase Cloud Messaging
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

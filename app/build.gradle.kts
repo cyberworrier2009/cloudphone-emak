@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -69,6 +70,11 @@ dependencies {
 
     // SIP / VOIP
     implementation(libs.linphone.sdk.android)
+
+    // Push (FCM) — wakeup for incoming calls when the app is backgrounded.
+    // Requires a real google-services.json from the Firebase console.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
