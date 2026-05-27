@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Emak CloudPhone</string>
+
+    <!-- Dialer -->
+    <string name="dialer_title">Keypad</string>
+    <string name="dialer_hint">Enter number</string>
+    <string name="call">Call</string>
+    <string name="delete">Delete</string>
+
+    <!-- Account -->
+    <string name="account_title">SIP Account</string>
+    <string name="account_username">Username</string>
+    <string name="account_password">Password</string>
+    <string name="account_domain">Domain / Server</string>
+    <string name="account_register">Register</string>
+    <string name="account_unregister">Sign out</string>
+
+    <!-- Call -->
+    <string name="mute">Mute</string>
+    <string name="speaker">Speaker</string>
+    <string name="hang_up">Hang up</string>
+    <string name="answer">Answer</string>
+    <string name="decline">Decline</string>
+</resources>

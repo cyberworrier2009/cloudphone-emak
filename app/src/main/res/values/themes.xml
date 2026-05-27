@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base theme for a Compose-only app: no XML ActionBar. -->
+    <style name="Theme.EmakCloudPhone" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+</resources>

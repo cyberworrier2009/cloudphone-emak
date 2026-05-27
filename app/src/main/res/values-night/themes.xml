@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Dark variant for the Compose-only app: no XML ActionBar. -->
+    <style name="Theme.EmakCloudPhone" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+</resources>
