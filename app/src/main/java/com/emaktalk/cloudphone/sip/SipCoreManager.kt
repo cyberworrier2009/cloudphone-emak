@@ -129,9 +129,19 @@ object SipCoreManager {
                     consecutivePoorSamples = 0
                     consecutiveGoodSamples = 0
                     degradedByQuality = false
-                    audio.beginCall()
-                    mediaButtons.acquire()
-                    CallForegroundService.start(appContext, call.remoteAddress.displayName ?: "Call")
+                    // Each of these is best-effort: a thrown exception in
+                    // the audio / media-session / FGS plumbing shouldn't
+                    // tear down the call itself.
+                    runCatching { audio.beginCall() }
+                        .onFailure { Log.w(TAG, "audio.beginCall failed", it) }
+                    runCatching { mediaButtons.acquire() }
+                        .onFailure { Log.w(TAG, "mediaButtons.acquire failed", it) }
+                    runCatching {
+                        CallForegroundService.start(
+                            appContext,
+                            call.remoteAddress.displayName ?: "Call"
+                        )
+                    }.onFailure { Log.w(TAG, "CallForegroundService.start failed", it) }
                 }
                 Call.State.Connected, Call.State.StreamsRunning -> {
                     // Media flowing again after a handoff: clear the Reconnecting banner.
@@ -146,9 +156,12 @@ object SipCoreManager {
                 else -> Unit
             }
             if (state == Call.State.Released) {
-                audio.endCall()
-                mediaButtons.release()
-                CallForegroundService.stop(appContext)
+                runCatching { audio.endCall() }
+                    .onFailure { Log.w(TAG, "audio.endCall failed", it) }
+                runCatching { mediaButtons.release() }
+                    .onFailure { Log.w(TAG, "mediaButtons.release failed", it) }
+                runCatching { CallForegroundService.stop(appContext) }
+                    .onFailure { Log.w(TAG, "CallForegroundService.stop failed", it) }
                 _callState.value = null
             } else {
                 _callState.value = call.toUiState()
@@ -355,14 +368,8 @@ object SipCoreManager {
         // one. Costs ~2x audio bandwidth (still <50 kbps with Opus) but
         // recovers single-packet loss instantly with no codec FEC delay.
         cfg.setInt("rtp", "audio_payload_redundancy", 1)
-        // Send RTCP every 2.5s so we get up-to-date loss/jitter telemetry and
-        // the remote can adapt its encoding.
-        cfg.setFloat("rtp", "rtcp_interval", 2.5f)
         // Always-on RTCP for jitter buffer feedback.
         cfg.setInt("rtp", "rtcp_enabled", 1)
-        // Use symmetric RTP/RTCP-mux so a single port survives NAT rebinds.
-        cfg.setInt("rtp", "rtp_port", -1) // -1 = pick freely
-        cfg.setInt("rtp", "rtcp_mux", 1)
 
         // ----- Jitter buffer bounds (mobile-tuned) -----
         // Default range is 40-1000ms; tighten the floor and widen the

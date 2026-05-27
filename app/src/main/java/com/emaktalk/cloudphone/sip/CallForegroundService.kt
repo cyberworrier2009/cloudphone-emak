@@ -44,11 +44,14 @@ class CallForegroundService : Service() {
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Microphone-only type. phoneCall type would require either
+            // MANAGE_OWN_CALLS perm + ConnectionService integration or the
+            // default-dialer role — both bigger projects. Microphone is
+            // enough to keep the RTP/SIP path alive when backgrounded.
             startForeground(
                 NOTIFICATION_ID,
                 notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE or
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
             )
         } else {
             startForeground(NOTIFICATION_ID, notification)

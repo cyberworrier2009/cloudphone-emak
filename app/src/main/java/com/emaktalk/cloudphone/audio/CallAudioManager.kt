@@ -153,18 +153,24 @@ class CallAudioManager(private val context: Context) {
 
         requestAudioFocus()
 
-        // Mic-side platform effects. We attach them to the global recording
-        // session (id 0); some OEMs only honor this when the AudioRecord
-        // actually starts, so we install + leave them, and Linphone's own
-        // VOICE_COMMUNICATION source will pick them up.
+        // Mic-side platform effects. Session 0 (global) is what Linphone's
+        // OpenSL recorder uses; some devices/OEMs throw when attaching to
+        // session 0 specifically, so each call is independently guarded —
+        // we'd rather have a working call without one effect than no call.
         if (AcousticEchoCanceler.isAvailable()) {
-            aec = AcousticEchoCanceler.create(0)?.apply { enabled = true }
+            aec = runCatching { AcousticEchoCanceler.create(0)?.apply { enabled = true } }
+                .onFailure { Log.w(TAG, "AcousticEchoCanceler unavailable", it) }
+                .getOrNull()
         }
         if (NoiseSuppressor.isAvailable()) {
-            ns = NoiseSuppressor.create(0)?.apply { enabled = true }
+            ns = runCatching { NoiseSuppressor.create(0)?.apply { enabled = true } }
+                .onFailure { Log.w(TAG, "NoiseSuppressor unavailable", it) }
+                .getOrNull()
         }
         if (AutomaticGainControl.isAvailable()) {
-            agc = AutomaticGainControl.create(0)?.apply { enabled = true }
+            agc = runCatching { AutomaticGainControl.create(0)?.apply { enabled = true } }
+                .onFailure { Log.w(TAG, "AutomaticGainControl unavailable", it) }
+                .getOrNull()
         }
         Log.i(TAG, "Platform DSP: aec=${aec != null} ns=${ns != null} agc=${agc != null}")
 

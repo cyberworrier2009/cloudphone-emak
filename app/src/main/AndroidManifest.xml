@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
 
     <uses-feature
         android:name="android.hardware.microphone"
@@ -52,7 +51,7 @@
         <service
             android:name=".sip.CallForegroundService"
             android:exported="false"
-            android:foregroundServiceType="microphone|phoneCall" />
+            android:foregroundServiceType="microphone" />
 
         <!-- Wired/Bluetooth headset hook button (single click = answer/hangup). -->
         <receiver
